@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Feliz Dia das Mães</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff0f5;
+            color: #333;
+            text-align: center;
+            padding: 30px;
+        }
+        h1 {
+            color: #d6336c;
+            font-size: 3em;
+        }
+        p {
+            font-size: 1.3em;
+            max-width: 700px;
+            margin: auto;
+        }
+        .heart {
+            font-size: 2em;
+            color: red;
+            margin-top: 20px;
+        }
+
+        /* Estilo do jogo da velha */
+        #game {
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            width: 310px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            border: 2px solid #d6336c;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #d6336c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #status {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #444;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #d6336c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #a81f4d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Feliz Dia das Mães!</h1>
+    <p>
+        Neste dia tão especial, queremos homenagear todas as mães com todo o carinho e gratidão do mundo.
+        Você, mãe, é sinônimo de amor incondicional, força e sabedoria. Obrigado por cada gesto,
+        por cada palavra, por cada cuidado. Seu amor é o maior presente que podemos receber.
+    </p>
+    <div class="heart">❤️❤️❤️</div>
+
+    <h2>Jogo da Velha para se divertir em família</h2>
+    <div id="game"></div>
+    <div id="status">Vez do jogador: X</div>
+    <button onclick="resetGame()">Reiniciar Jogo</button>
+
+    <script>
+        const game = document.getElementById('game');
+        const statusDiv = document.getElementById('status');
+        let currentPlayer = 'X';
+        let board = ["", "", "", "", "", "", "", "", ""];
+        let gameActive = true;
+
+        function createBoard() {
+            game.innerHTML = '';
+            board.forEach((cell, index) => {
+                const cellDiv = document.createElement('div');
+                cellDiv.classList.add('cell');
+                cellDiv.dataset.index = index;
+                cellDiv.innerText = cell;
+                cellDiv.addEventListener('click', cellClick);
+                game.appendChild(cellDiv);
+            });
+        }
+
+        function cellClick(e) {
+            const index = e.target.dataset.index;
+            if (board[index] !== "" || !gameActive) return;
+            board[index] = currentPlayer;
+            e.target.innerText = currentPlayer;
+            if (checkWin()) {
+                statusDiv.innerText = `Jogador ${currentPlayer} venceu! 🎉`;
+                gameActive = false;
+                return;
+            } else if (!board.includes("")) {
+                statusDiv.innerText = "Empate!";
+                gameActive = false;
+                return;
+            }
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            statusDiv.innerText = `Vez do jogador: ${currentPlayer}`;
+        }
+
+        function checkWin() {
+            const winCombos = [
+                [0,1,2], [3,4,5], [6,7,8],
+                [0,3,6], [1,4,7], [2,5,8],
+                [0,4,8], [2,4,6]
+            ];
+            return winCombos.some(combo => {
+                const [a, b, c] = combo;
+                return board[a] && board[a] === board[b] && board[a] === board[c];
+            });
+        }
+
+        function resetGame() {
+            board = ["", "", "", "", "", "", "", "", ""];
+            currentPlayer = 'X';
+            gameActive = true;
+            statusDiv.innerText = `Vez do jogador: ${currentPlayer}`;
+            createBoard();
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
